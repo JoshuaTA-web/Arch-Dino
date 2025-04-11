@@ -50,6 +50,8 @@
   let craneX = 800;
   let craneDirection = -1;
   let speedMultiplier = 1;
+  let dayTime = true;
+  let colorTransition = 0;
 
   const dinoImg = new Image();
   dinoImg.src = 'archdino.png';
@@ -102,8 +104,16 @@
   }
 
   function drawBackground() {
+    // Day/Night cycle transition
+    if (score % 1000 === 0 && score !== 0) {
+      dayTime = !dayTime;
+    }
+    const color = dayTime ? 240 : 20;
+    const bgColor = `rgb(${color}, ${color}, ${color})`;
+    canvas.style.backgroundColor = bgColor;
+
     backgroundElements.forEach(bg => {
-      ctx.drawImage(skyline, bg.x, 200, 800, 100);
+      ctx.drawImage(skyline, bg.x, 100, 800, 200);
       bg.x -= 2;
     });
     if (backgroundElements[backgroundElements.length - 1].x <= 0) {
@@ -201,3 +211,4 @@
 
 </body>
 </html>
+
