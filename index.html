@@ -3,12 +3,14 @@
 <head>
   <meta charset="UTF-8">
   <title>Arch-Dino</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <style>
     canvas {
       background: #f0f0f0;
       display: block;
       margin: 0 auto;
       border: 2px solid #333;
+      touch-action: manipulation;
     }
     #restartBtn {
       display: none;
@@ -45,6 +47,9 @@
   let backgroundElements = [];
   let score = 0;
   let gameOver = false;
+  let craneX = 800;
+  let craneDirection = -1;
+  let speedMultiplier = 1;
 
   const dinoImg = new Image();
   dinoImg.src = 'archdino.png';
@@ -62,10 +67,10 @@
   obstacleImages.chair.src = 'chair.png';
 
   const skyline = new Image();
-  skyline.src = 'skyline.png'; // custom background image (skyline)
+  skyline.src = 'skyline.png';
 
   const crane = new Image();
-  crane.src = 'crane.png'; // optional occasional background crane hook
+  crane.src = 'crane.png';
 
   const jumpSound = new Audio('jump.wav');
   const crashSound = new Audio('crash.wav');
@@ -74,8 +79,9 @@
     dino.y = 250;
     dino.vy = 0;
     obstacles = [];
-    backgroundElements = [];
+    backgroundElements = [{ x: 0 }, { x: 800 }];
     score = 0;
+    speedMultiplier = 1;
     gameOver = false;
     restartBtn.style.display = 'none';
     loop();
@@ -84,39 +90,31 @@
   function createObstacle() {
     const types = ['box', 'cone', 'sign', 'chair'];
     const type = types[Math.floor(Math.random() * types.length)];
-
-    obstacles.push({
-      x: canvas.width,
-      y: 260,
-      width: 40,
-      height: 40,
-      type: type
-    });
+    obstacles.push({ x: canvas.width, y: 260, width: 40, height: 40, type: type });
   }
 
   function drawObstacles() {
     obstacles.forEach(obs => {
       ctx.drawImage(obstacleImages[obs.type], obs.x, obs.y, obs.width, obs.height);
-      obs.x -= 5;
+      obs.x -= 5 * speedMultiplier;
     });
     obstacles = obstacles.filter(obs => obs.x + obs.width > 0);
   }
 
   function drawBackground() {
-    // skyline moves slower for parallax effect
-    backgroundElements.forEach((bg, index) => {
+    backgroundElements.forEach(bg => {
       ctx.drawImage(skyline, bg.x, 200, 800, 100);
       bg.x -= 2;
     });
-    if (backgroundElements.length === 0 || backgroundElements[backgroundElements.length - 1].x <= 0) {
-      backgroundElements.push({ x: canvas.width });
+    if (backgroundElements[backgroundElements.length - 1].x <= 0) {
+      backgroundElements.push({ x: 800 });
     }
     backgroundElements = backgroundElements.filter(bg => bg.x + 800 > 0);
 
-    // occasionally draw crane
-    if (score % 800 === 0 && !gameOver) {
-      ctx.drawImage(crane, 600, 0, 40, 100);
-    }
+    // Move crane hook across the screen
+    craneX += craneDirection * 2;
+    if (craneX <= -40 || craneX >= canvas.width) craneDirection *= -1;
+    ctx.drawImage(crane, craneX, 0, 40, 100);
   }
 
   function detectCollision() {
@@ -169,25 +167,35 @@
       createObstacle();
     }
 
+    if (score % 300 === 0) {
+      speedMultiplier += 0.2;
+    }
+
     requestAnimationFrame(loop);
   }
 
-  document.addEventListener('keydown', function (e) {
-    if (e.code === 'Space') {
-      if (gameOver) {
-        resetGame();
-      } else if (!dino.isJumping) {
-        dino.vy = -20;
-        dino.isJumping = true;
-        jumpSound.play();
-      }
+  function handleJump() {
+    if (gameOver) {
+      resetGame();
+    } else if (!dino.isJumping) {
+      dino.vy = -20;
+      dino.isJumping = true;
+      jumpSound.play();
     }
+  }
+
+  document.addEventListener('keydown', e => {
+    if (e.code === 'Space') handleJump();
+  });
+
+  canvas.addEventListener('touchstart', () => {
+    handleJump();
   });
 
   restartBtn.addEventListener('click', resetGame);
 
-  dinoImg.onload = function () {
-    loop();
+  dinoImg.onload = () => {
+    resetGame();
   };
 </script>
 
