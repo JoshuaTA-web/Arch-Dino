@@ -138,15 +138,17 @@
     }
     backgroundElements = backgroundElements.filter(bg => bg.x + 800 > 0);
 
-    // Move crane hook across the screen
-    craneX += craneDirection * 2;
-    if (craneX <= -40 || craneX >= canvas.width) craneDirection *= -1;
-    // Draw crane with glowing shadow
+    // Draw crane with glowing shadow (in front)
     ctx.shadowColor = 'rgba(0, 0, 0, 0.2)';
     ctx.shadowBlur = 15;
     ctx.drawImage(crane, craneX, 0, 40, 100);
     ctx.shadowBlur = 0;
     ctx.shadowColor = 'transparent';
+
+    // Move crane hook across the screen
+    craneX += craneDirection * 2;
+    if (craneX <= -40 || craneX >= canvas.width) craneDirection *= -1;
+    
 
     // Twinkling stars
     if (!dayTime) {
@@ -162,7 +164,7 @@
       });
     }
 
-    // Move sun or moon
+    // Move sun or moon behind crane
     ctx.shadowColor = 'rgba(0, 0, 0, 0.3)';
     ctx.shadowBlur = 10;
     if (dayTime) {
