@@ -138,12 +138,7 @@
     }
     backgroundElements = backgroundElements.filter(bg => bg.x + 800 > 0);
 
-    // Draw crane with glowing shadow (in front)
-    ctx.shadowColor = 'rgba(0, 0, 0, 0.2)';
-    ctx.shadowBlur = 15;
-    ctx.drawImage(crane, craneX, 0, 40, 100);
-    ctx.shadowBlur = 0;
-    ctx.shadowColor = 'transparent';
+    
 
     // Move crane hook across the screen
     craneX += craneDirection * 2;
@@ -175,6 +170,14 @@
     ctx.shadowBlur = 0;
     ctx.shadowColor = 'transparent';
     skyObjectX -= 0.5;
+    if (skyObjectX < -40) skyObjectX = canvas.width;
+
+    // Draw crane with glowing shadow (after sun/moon)
+    ctx.shadowColor = 'rgba(0, 0, 0, 0.2)';
+    ctx.shadowBlur = 15;
+    ctx.drawImage(crane, craneX, 0, 40, 100);
+    ctx.shadowBlur = 0;
+    ctx.shadowColor = 'transparent';
     if (skyObjectX < -40) skyObjectX = canvas.width;
   }
 
