@@ -121,7 +121,9 @@
       dayTime = !dayTime;
     }
     const color = dayTime ? 240 : 160;
-    const bgColor = `rgb(${color}, ${color}, ${color})`; ctx.fillStyle = bgColor; ctx.fillRect(0, 0, canvas.width, canvas.height);
+    const bgColor = `rgb(${color}, ${color}, ${color})`;
+    ctx.fillStyle = bgColor;
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
     // Smooth background transition (optional blend)
     ctx.fillStyle = `rgba(${color}, ${color}, ${color}, 0.1)`;
     ctx.fillRect(0, 0, canvas.width, canvas.height);
