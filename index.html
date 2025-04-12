@@ -248,6 +248,11 @@ crashSound.load();
       resetGame();
       return;
     }
+    if (!dino.isJumping) {
+      dino.vy = -20;
+      dino.isJumping = true;
+    }
+  }
     }
   }
 
@@ -268,4 +273,3 @@ crashSound.load();
 
 </body>
 </html>
-
