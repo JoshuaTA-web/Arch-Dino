@@ -87,7 +87,11 @@
   crane.src = 'crane.png';
 
   const jumpSound = new Audio('jump.wav');
+jumpSound.volume = 1.0;
+jumpSound.load();
   const crashSound = new Audio('crash.wav');
+crashSound.volume = 1.0;
+crashSound.load();
 
   function resetGame() {
     dino.y = 250;
@@ -189,7 +193,7 @@
         dino.y < obs.y + obs.height &&
         dino.y + dino.height > obs.y
       ) {
-        crashSound.play();
+        crashSound.play().catch(e => console.log('Crash sound error:', e));
         return true;
       }
     }
@@ -244,7 +248,7 @@
     } else if (!dino.isJumping) {
       dino.vy = -20;
       dino.isJumping = true;
-      jumpSound.play();
+      jumpSound.play().catch(e => console.log('Jump sound error:', e));
     }
   }
 
