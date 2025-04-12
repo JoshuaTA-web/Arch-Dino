@@ -243,12 +243,11 @@ crashSound.load();
   }
 
   function handleJump() {
+    jumpSound.play().catch(e => console.log('Jump sound error:', e));
     if (gameOver) {
       resetGame();
-    } else if (!dino.isJumping) {
-      dino.vy = -20;
-      dino.isJumping = true;
-      jumpSound.play().catch(e => console.log('Jump sound error:', e));
+      return;
+    }
     }
   }
 
@@ -269,3 +268,4 @@ crashSound.load();
 
 </body>
 </html>
+
